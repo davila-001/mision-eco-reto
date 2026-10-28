@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misión Eco-Reto</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <!-- Página de Login/Registro -->
+  <div id="pagina-login" class="pagina activa">
+    <div class="contenedor-login">
+      <h1>🌿 Misión Eco-Reto</h1>
+      <p class="subtitulo">Pequeñas acciones, grandes cambios</p>
+      
+      <div id="form-login">
+        <h2>Iniciar sesión</h2>
+        <input type="text" id="usuario" placeholder="Usuario">
+        <input type="password" id="contrasena" placeholder="Contraseña">
+        <button onclick="iniciarSesion()">Entrar</button>
+        <p>¿No tienes cuenta? <a href="#" onclick="mostrarRegistro()">Regístrate</a></p>
+      </div>
+      
+      <div id="form-registro" style="display:none;">
+        <h2>Registrarse</h2>
+        <input type="text" id="nuevo-usuario" placeholder="Usuario">
+        <input type="password" id="nueva-contrasena" placeholder="Contraseña">
+        <button onclick="registrarse()">Crear cuenta</button>
+        <p>¿Ya tienes cuenta? <a href="#" onclick="mostrarLogin()">Inicia sesión</a></p>
+      </div>
+      <p id="mensaje-error" class="error"></p>
+    </div>
+  </div>
+
+  <!-- Página Principal -->
+  <div id="pagina-principal" class="pagina">
+    <div class="contenedor">
+      <aside class="barra-lateral">
+        <h2>🌿 Misión Eco-Reto</h2>
+        <nav>
+          <a href="#" class="enlace-nav activo" data-pagina="inicio">🏠 Inicio</a>
+          <a href="#" class="enlace-nav" data-pagina="mis-acciones">📋 Mis acciones</a>
+          <a href="#" class="enlace-nav" data-pagina="nueva">➕ Nueva acción</a>
+          <a href="#" class="enlace-nav" data-pagina="estadisticas">📊 Estadísticas</a>
+          <a href="#" class="enlace-nav" onclick="cerrarSesion()">🚪 Cerrar sesión</a>
+        </nav>
+      </aside>
+
+      <main class="contenido">
+        <!-- Inicio -->
+        <section id="seccion-inicio" class="seccion activa">
+          <h1>¡Bienvenido a Misión Eco-Reto!</h1>
+          <p>Registra, consulta y comparte las acciones que ayudan al planeta.</p>
+          <div class="tarjetas">
+            <div class="tarjeta verde"><span id="est-acciones">0</span><br>Acciones registradas</div>
+            <div class="tarjeta azul"><span id="est-agua">0</span><br>Litros de agua ahorrados</div>
+            <div class="tarjeta amarilla"><span id="est-materiales">0</span><br>Materiales reciclados</div>
+            <div class="tarjeta rosa"><span id="est-co2">0 kg</span><br>CO₂ evitado</div>
+          </div>
+        </section>
+
+        <!-- Mis Acciones -->
+        <section id="seccion-mis-acciones" class="seccion">
+          <h2>Mis acciones registradas</h2>
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Impacto</th><th>Acciones</th></tr>
+            </thead>
+            <tbody id="lista-acciones"></tbody>
+          </table>
+        </section>
+
+        <!-- Nueva Acción -->
+        <section id="seccion-nueva" class="seccion">
+          <h2>Nueva acción ecológica</h2>
+          <form id="form-accion" onsubmit="guardarAccion(event)">
+            <label>Tipo de acción:</label>
+            <select id="tipo-accion" required>
+              <option value="Reciclaje">♻️ Reciclaje</option>
+              <option value="Ahorro de agua">💧 Ahorro de agua</option>
+              <option value="Transporte">🚲 Transporte sostenible</option>
+              <option value="Energía">⚡ Ahorro de energía</option>
+            </select>
+            
+            <label>Descripción:</label>
+            <input type="text" id="descripcion" placeholder="Ej: Separé botellas de plástico" required>
+            
+            <label>Fecha:</label>
+            <input type="date" id="fecha" required>
+            
+            <label>Impacto (kg, litros, kWh):</label>
+            <input type="number" step="0.1" id="impacto" placeholder="Ej: 5" required>
+            
+            <button type="submit">✅ Guardar acción</button>
+          </form>
+        </section>
+
+        <!-- Editar Acción -->
+        <section id="seccion-editar" class="seccion">
+          <h2>Editar acción</h2>
+          <form id="form-editar" onsubmit="actualizarAccion(event)">
+            <input type="hidden" id="editar-id">
+            <label>Tipo de acción:</label>
+            <select id="editar-tipo" required>
+              <option value="Reciclaje">♻️ Reciclaje</option>
+              <option value="Ahorro de agua">💧 Ahorro de agua</option>
+              <option value="Transporte">🚲 Transporte sostenible</option>
+              <option value="Energía">⚡ Ahorro de energía</option>
+            </select>
+            
+            <label>Descripción:</label>
+            <input type="text" id="editar-descripcion" required>
+            
+            <label>Fecha:</label>
+            <input type="date" id="editar-fecha" required>
+            
+            <label>Impacto:</label>
+            <input type="number" step="0.1" id="editar-impacto" required>
+            
+            <button type="submit">🔄 Actualizar</button>
+            <button type="button" onclick="cancelarEdicion()" class="btn-cancelar">❌ Cancelar</button>
+          </form>
+        </section>
+
+        <!-- Estadísticas -->
+        <section id="seccion-estadisticas" class="seccion">
+          <h2>📊 Estadísticas Ambientales</h2>
+          <div class="estadisticas-detalle">
+            <p><strong>Acciones totales:</strong> <span id="stat-acciones">0</span></p>
+            <p><strong>Agua ahorrada:</strong> <span id="stat-agua">0</span> litros 💧</p>
+            <p><strong>CO₂ reducido:</strong> <span id="stat-co2">0</span> kg ☁️</p>
+            <p><strong>Materiales reciclados:</strong> <span id="stat-materiales">0</span> kg ♻️</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
